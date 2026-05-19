@@ -49,5 +49,5 @@ tasks.named('test') {
 }
 
 bootJar {
-    archiveFileName = 'book-app.jar'
+    archiveFileName = 'fullstack-book-app.jar'
 }

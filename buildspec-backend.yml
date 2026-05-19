@@ -6,8 +6,7 @@ phases:
       java: corretto21
   pre_build:
     commands:
-      - java -version
-      - ./gradlew clean build # 빌드 실행
+      - echo "=== 백엔드 빌드 시작: $(date) ==="
   build:
     commands:
       - chmod +x ./gradlew
@@ -15,15 +14,15 @@ phases:
   post_build:
     commands:
       - mkdir -p deploy-backend
+      # jar 파일 복사 (파일명이 불분명할 수 있으므로 *.jar 사용 후 이름 변경)
       - cp build/libs/*.jar deploy-backend/book-app.jar
       - cp Procfile deploy-backend/
       - '[ -d .ebextensions ] && cp -r .ebextensions deploy-backend/ || true'
       - ls -la deploy-backend/
 
 artifacts:
+  # 빌드 결과물을 모아둔 폴더를 베이스 디렉토리로 설정
+  base-directory: deploy-backend
   files:
-    - build/libs/fullstack-book-app.jar  # 빌드된 jar 파일
-    - Procfile                           # Procfile 포함
-    - .ebextensions/**/* # 설정 파일
-      # 중요한 부분: 아티팩트의 베이스 디렉토리를 명시
-  base-directory: .
+    - '**/*'  # 해당 폴더 내의 모든 파일을 포함
+  discard-paths: no
