@@ -8,6 +8,7 @@ phases:
   pre_build:
     commands:
       - echo "Backend build started"
+      - chmod +x gradlew
       - java -version
 
   build:
