@@ -7,8 +7,8 @@ phases:
 
   pre_build:
     commands:
-      - echo "Installing dependencies..."
-      - npm ci
+    - echo "Installing dependencies..."
+    - npm install
 
   build:
     commands:
