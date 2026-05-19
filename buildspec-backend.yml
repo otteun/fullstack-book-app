@@ -3,11 +3,16 @@ version: 0.2
 phases:
   install:
     commands:
-      - echo "Install Corretto 21 manually"
+      - echo "Installing Corretto 21"
       - yum install -y java-21-amazon-corretto-devel
+
       - export JAVA_HOME=/usr/lib/jvm/java-21-amazon-corretto
       - export PATH=$JAVA_HOME/bin:$PATH
+
+      - alternatives --set java $JAVA_HOME/bin/java || true
+
       - java -version
+      - echo $JAVA_HOME
 
   pre_build:
     commands:
@@ -16,13 +21,14 @@ phases:
 
   build:
     commands:
+      - echo "Build backend"
       - ./gradlew clean build
 
   post_build:
     commands:
       - echo "Prepare deploy package"
       - mkdir -p deploy
-      - cp build/libs/*.jar deploy/application.jar
+      - cp build/libs/*.jar deploy/fullstack-book-app.jar
 
 artifacts:
   base-directory: deploy
