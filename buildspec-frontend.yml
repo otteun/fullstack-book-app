@@ -14,8 +14,7 @@ phases:
   build:
     commands:
       - echo "Building project..."
-      - cd fullstack-book-app-front
-      - npm run build
+      - npm run build   # ❌ cd 제거
 
   post_build:
     commands:
@@ -29,8 +28,6 @@ phases:
       - cp fullstack-book-app-front/package-lock.json deploy-frontend/
       - cp fullstack-book-app-front/Procfile deploy-frontend/
       - cp -r fullstack-book-app-front/public deploy-frontend/ || true
-
-      - ls -la deploy-frontend/
 
 artifacts:
   files:
