@@ -13,16 +13,15 @@ phases:
       - ./gradlew bootJar -x test
   post_build:
     commands:
+      - echo "=== 빌드 완료, 배포 준비 시작 ==="
       - mkdir -p deploy-backend
-      # jar 파일 복사 (파일명이 불분명할 수 있으므로 *.jar 사용 후 이름 변경)
       - cp build/libs/*.jar deploy-backend/book-app.jar
       - cp Procfile deploy-backend/
-      - '[ -d .ebextensions ] && cp -r .ebextensions deploy-backend/ || true'
+      - if [ -d .ebextensions ]; then cp -r .ebextensions deploy-backend/; fi
       - ls -la deploy-backend/
 
 artifacts:
-  # 빌드 결과물을 모아둔 폴더를 베이스 디렉토리로 설정
   base-directory: deploy-backend
   files:
-    - '**/*'  # 해당 폴더 내의 모든 파일을 포함
+    - '**/*'
   discard-paths: no
