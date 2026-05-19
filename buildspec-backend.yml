@@ -1,6 +1,13 @@
 version: 0.2
 
 phases:
+  install:
+    runtime-versions:
+      java: corretto21
+    commands:
+      - echo "Installing Java 21"
+      - java -version
+
   pre_build:
     commands:
       - echo "Backend build started"
@@ -8,12 +15,17 @@ phases:
 
   build:
     commands:
+      - echo "Build backend"
       - ./gradlew clean build -x test
 
   post_build:
     commands:
+      - echo "Prepare deploy package"
       - mkdir -p deploy
-      - cp build/libs/*.jar deploy/app.jar
+      - ls -al build/libs
+      - JAR_FILE=$(ls build/libs/*.jar | head -n 1)
+      - echo "JAR found: $JAR_FILE"
+      - cp "$JAR_FILE" deploy/app.jar
 
 artifacts:
   files:
