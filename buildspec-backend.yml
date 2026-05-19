@@ -14,7 +14,7 @@ phases:
   post_build:
     commands:
       - mkdir -p deploy-backend
-      - cp build/libs/note-app.jar deploy-backend/
+      - cp build/libs/*.jar deploy-backend/book-app.jar
       - cp Procfile deploy-backend/
       - '[ -d .ebextensions ] && cp -r .ebextensions deploy-backend/ || true'
       - ls -la deploy-backend/
