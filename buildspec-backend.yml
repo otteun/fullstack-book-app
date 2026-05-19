@@ -8,24 +8,20 @@ phases:
   pre_build:
     commands:
       - echo "Backend build started"
-      - export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
-      - export PATH=$JAVA_HOME/bin:$PATH
       - java -version
 
   build:
     commands:
-      - chmod +x gradlew
-      - ./gradlew bootJar -x test
+      - echo "Build backend"
+      - ./gradlew clean build
 
   post_build:
     commands:
-      - echo "Preparing deployment package"
-      - mkdir -p deploy-backend
-      - cp build/libs/*.jar deploy-backend/book-app.jar
-      - cp Procfile deploy-backend/
-      - ls -la deploy-backend/
+      - echo "Prepare deploy package"
+      - mkdir -p deploy
+      - cp build/libs/*.jar deploy/application.jar
 
 artifacts:
-  base-directory: deploy-backend
+  base-directory: deploy
   files:
     - '**/*'
