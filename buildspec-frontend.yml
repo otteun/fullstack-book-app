@@ -4,26 +4,29 @@ phases:
   install:
     runtime-versions:
       nodejs: 22
+
   pre_build:
     commands:
       - echo "Installing dependencies..."
-      - cd fullstack-book-app-front && npm ci
+      - npm ci
+
   build:
     commands:
       - echo "Building project..."
-      - cd fullstack-book-app-front && npm run build # 여기서 next build가 실행됨
+      - npm run build
+
   post_build:
     commands:
       - echo "Preparing deployment package..."
-      - cd $CODEBUILD_SRC_DIR
       - mkdir -p deploy-frontend
-      # 필요한 파일만 명시적으로 복사
-      - cp -r fullstack-book-app-front/.next deploy-frontend/
-      - cp -r fullstack-book-app-front/node_modules deploy-frontend/
-      - cp fullstack-book-app-front/package.json deploy-frontend/
-      - cp fullstack-book-app-front/package-lock.json deploy-frontend/
-      - cp fullstack-book-app-front/Procfile deploy-frontend/
-      - cp -r fullstack-book-app-front/public deploy-frontend/ || true
+
+      - cp -r .next deploy-frontend/
+      - cp -r node_modules deploy-frontend/
+      - cp package.json deploy-frontend/
+      - cp package-lock.json deploy-frontend/
+      - cp Procfile deploy-frontend/
+      - cp -r public deploy-frontend/ || true
+
       - ls -la deploy-frontend/
 
 artifacts:
