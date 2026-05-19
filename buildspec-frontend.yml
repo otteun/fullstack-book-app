@@ -7,25 +7,28 @@ phases:
 
   pre_build:
     commands:
-    - echo "Installing dependencies..."
-    - npm install
+      - echo "Installing dependencies..."
+      - cd fullstack-book-app-front
+      - npm install
 
   build:
     commands:
       - echo "Building project..."
+      - cd fullstack-book-app-front
       - npm run build
 
   post_build:
     commands:
       - echo "Preparing deployment package..."
+      - cd $CODEBUILD_SRC_DIR
       - mkdir -p deploy-frontend
 
-      - cp -r .next deploy-frontend/
-      - cp -r node_modules deploy-frontend/
-      - cp package.json deploy-frontend/
-      - cp package-lock.json deploy-frontend/
-      - cp Procfile deploy-frontend/
-      - cp -r public deploy-frontend/ || true
+      - cp -r fullstack-book-app-front/.next deploy-frontend/
+      - cp -r fullstack-book-app-front/node_modules deploy-frontend/
+      - cp fullstack-book-app-front/package.json deploy-frontend/
+      - cp fullstack-book-app-front/package-lock.json deploy-frontend/
+      - cp fullstack-book-app-front/Procfile deploy-frontend/
+      - cp -r fullstack-book-app-front/public deploy-frontend/ || true
 
       - ls -la deploy-frontend/
 
