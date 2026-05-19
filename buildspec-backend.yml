@@ -5,7 +5,7 @@ phases:
     runtime-versions:
       java: corretto21
     commands:
-      - echo "Installing Java 21"
+      - echo "Using Java 21"
       - java -version
 
   pre_build:
@@ -15,18 +15,17 @@ phases:
 
   build:
     commands:
-      - echo "Build backend"
-      - ./gradlew clean build -x test
+      - ./gradlew clean bootJar -x test
 
   post_build:
     commands:
       - echo "Prepare deploy package"
       - mkdir -p deploy
-      - ls -al build/libs
-      - JAR_FILE=$(ls build/libs/*.jar | head -n 1)
-      - echo "JAR found: $JAR_FILE"
-      - cp "$JAR_FILE" deploy/app.jar
+      - ls build/libs
+      - JAR_FILE=$(ls build/libs/*.jar | grep -v plain | head -n 1)
+      - echo "Using $JAR_FILE"
+      - cp "$JAR_FILE" deploy/fullstack-book-app.jar
 
 artifacts:
   files:
-    - deploy/app.jar
+    - deploy/fullstack-book-app.jar
