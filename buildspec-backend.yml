@@ -3,14 +3,17 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      java: corretto21
+      java: 21
+
   pre_build:
     commands:
       - echo "=== 백엔드 빌드 시작: $(date) ==="
+
   build:
     commands:
       - chmod +x ./gradlew
       - ./gradlew bootJar -x test
+
   post_build:
     commands:
       - echo "=== 빌드 완료, 배포 준비 시작 ==="
