@@ -8,6 +8,9 @@ phases:
   pre_build:
     commands:
       - echo "Backend build started"
+      - export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
+      - export PATH=$JAVA_HOME/bin:$PATH
+      - java -version
 
   build:
     commands:
