@@ -21,6 +21,6 @@ phases:
 
 artifacts:
   files:
-    - '**/*'
-  base-directory: deploy-backend
-  discard-paths: no
+    - build/libs/fullstack-book-app.jar  # 빌드된 jar 파일
+    - Procfile                           # Procfile 포함
+    - .ebextensions/**/* # 설정 파일 포함
