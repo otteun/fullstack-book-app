@@ -1,18 +1,6 @@
 version: 0.2
 
 phases:
-  install:
-    commands:
-      - echo "Installing Java 21"
-      - yum install -y java-21-amazon-corretto-devel
-
-      # 🔥 JAVA 21 강제 지정 (중요)
-      - export JAVA_HOME=/usr/lib/jvm/java-21-amazon-corretto
-      - export PATH=$JAVA_HOME/bin:$PATH
-
-      - java -version
-      - echo $JAVA_HOME
-
   pre_build:
     commands:
       - echo "Backend build started"
@@ -20,13 +8,10 @@ phases:
 
   build:
     commands:
-      - echo "Build backend"
-      # 🔥 테스트 스킵 (지금 에러 원인)
       - ./gradlew clean build -x test
 
   post_build:
     commands:
-      - echo "Prepare deploy package"
       - mkdir -p deploy
       - cp build/libs/*.jar deploy/app.jar
 
