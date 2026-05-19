@@ -2,7 +2,7 @@ version: 0.2
 
 env:
   variables:
-    NEXT_PUBLIC_API_URL: "[BE_EB_URL]" # 실제 백엔드 주소 생기면 따옴표 안에 넣어주세요!
+    NEXT_PUBLIC_API_URL: "http://book-app-backend-prod.eba-mqzstydg.ap-northeast-2.elasticbeanstalk.com/" # 실제 백엔드 주소가 나오면 나중에 여기에 넣어줍니다!
 
 phases:
   install:
@@ -11,21 +11,21 @@ phases:
   pre_build:
     commands:
       - node -v && npm -v
-      - cd frontend && npm ci
+      - cd fullstack-book-app-front && npm ci
   build:
     commands:
-      - npm run build
+      - cd $CODEBUILD_SRC_DIR/fullstack-book-app-front && npm run build
   post_build:
     commands:
-      - cd ..
+      - cd $CODEBUILD_SRC_DIR
       - mkdir -p deploy-frontend
-      - cp -r frontend/.next deploy-frontend/
-      - cp frontend/package.json deploy-frontend/
-      - cp frontend/package-lock.json deploy-frontend/
-      - cp frontend/Procfile deploy-frontend/
-      - "[ -f frontend/next.config.ts ] && cp frontend/next.config.ts deploy-frontend/ || true"
-      - "[ -d frontend/public ] && cp -r frontend/public deploy-frontend/ || true"
-      - "[ -d frontend/.ebextensions ] && cp -r frontend/.ebextensions deploy-frontend/ || true"
+      - cp -r fullstack-book-app-front/.next deploy-frontend/
+      - cp fullstack-book-app-front/package.json deploy-frontend/
+      - cp fullstack-book-app-front/package-lock.json deploy-frontend/
+      - cp fullstack-book-app-front/Procfile deploy-frontend/
+      - "[ -f fullstack-book-app-front/next.config.ts ] && cp fullstack-book-app-front/next.config.ts deploy-frontend/ || true"
+      - "[ -d fullstack-book-app-front/public ] && cp -r fullstack-book-app-front/public deploy-frontend/ || true"
+      - "[ -d fullstack-book-app-front/.ebextensions ] && cp -r fullstack-book-app-front/.ebextensions deploy-frontend/ || true"
       - ls -la deploy-frontend/
 
 artifacts:

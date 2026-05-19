@@ -1,4 +1,3 @@
-
 version: 0.2
 
 phases:
@@ -10,15 +9,14 @@ phases:
       - java -version
   build:
     commands:
-      - chmod +x ./backend/gradlew
-      - ./backend/gradlew -p ./backend bootJar -x test
+      - chmod +x ./gradlew
+      - ./gradlew bootJar -x test
   post_build:
     commands:
       - mkdir -p deploy-backend
-      - cp backend/build/libs/note-app.jar deploy-backend/
-      - cp backend/Procfile deploy-backend/
-      - '[ -d backend/.ebextensions ] && cp -r backend/.ebextensions deploy
-backend/ || true'
+      - cp build/libs/note-app.jar deploy-backend/
+      - cp Procfile deploy-backend/
+      - '[ -d .ebextensions ] && cp -r .ebextensions deploy-backend/ || true'
       - ls -la deploy-backend/
 
 artifacts:
