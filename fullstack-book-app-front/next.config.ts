@@ -1,7 +1,9 @@
-import type { NextConfig } from "next";
+
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  /* config options here */
-};
+    // Amplify Hosting SSR을 위한 standalone 출력 (권장)
+    output: 'standalone',
+}
 
-export default nextConfig;
+export default nextConfig 
