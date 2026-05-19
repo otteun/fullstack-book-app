@@ -2,18 +2,20 @@ version: 0.2
 
 phases:
   install:
-    runtime-versions:
-      java: 21
+    commands:
+      - echo "Install Corretto 21 manually"
+      - yum install -y java-21-amazon-corretto-devel
+      - export JAVA_HOME=/usr/lib/jvm/java-21-amazon-corretto
+      - export PATH=$JAVA_HOME/bin:$PATH
+      - java -version
 
   pre_build:
     commands:
       - echo "Backend build started"
       - chmod +x gradlew
-      - java -version
 
   build:
     commands:
-      - echo "Build backend"
       - ./gradlew clean build
 
   post_build:
