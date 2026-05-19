@@ -7,24 +7,22 @@ phases:
 
   pre_build:
     commands:
-      - echo "=== 백엔드 빌드 시작: $(date) ==="
+      - echo "Backend build started"
 
   build:
     commands:
-      - chmod +x ./gradlew
+      - chmod +x gradlew
       - ./gradlew bootJar -x test
 
   post_build:
     commands:
-      - echo "=== 빌드 완료, 배포 준비 시작 ==="
+      - echo "Preparing deployment package"
       - mkdir -p deploy-backend
       - cp build/libs/*.jar deploy-backend/book-app.jar
       - cp Procfile deploy-backend/
-      - if [ -d .ebextensions ]; then cp -r .ebextensions deploy-backend/; fi
       - ls -la deploy-backend/
 
 artifacts:
   base-directory: deploy-backend
   files:
     - '**/*'
-  discard-paths: no
