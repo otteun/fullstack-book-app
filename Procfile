@@ -1,1 +1,1 @@
-web: java -Dserver.port=5000 -jar fullstack-book-app.jar
+cp build/libs/*.jar deploy/fullstack-book-app.jar
