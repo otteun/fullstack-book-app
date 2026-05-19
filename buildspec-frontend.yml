@@ -1,9 +1,8 @@
-
 version: 0.2
 
 env:
-variables:
-  NEXT_PUBLIC_API_URL: [BE_EB_URL]
+  variables:
+    NEXT_PUBLIC_API_URL: "[BE_EB_URL]" # 실제 백엔드 주소 생기면 따옴표 안에 넣어주세요!
 
 phases:
   install:
@@ -20,12 +19,17 @@ phases:
     commands:
       - cd ..
       - mkdir -p deploy-frontend
-      - cp -r frontend/.next deploy-frontend/ - cp frontend/package.json deploy-frontend/ - cp frontend/package-lock.json deploy-frontend/ - cp frontend/Procfile deploy-frontend/ - '[ -f frontend/next.config.ts ] && cp frontend/next.config.ts deploy
-      - frontend/ || true' - '[ -d frontend/public ] && cp -r frontend/public deploy-frontend/ ||
-      - true' - '[ -d frontend/.ebextensions ] && cp -r frontend/.ebextensions deploy
-      - frontend/ || true'
-      - artifacts:
-      - files:
-          - '**/*'
-      - base-directory: deploy-frontend
-      - discard-paths: no
+      - cp -r frontend/.next deploy-frontend/
+      - cp frontend/package.json deploy-frontend/
+      - cp frontend/package-lock.json deploy-frontend/
+      - cp frontend/Procfile deploy-frontend/
+      - "[ -f frontend/next.config.ts ] && cp frontend/next.config.ts deploy-frontend/ || true"
+      - "[ -d frontend/public ] && cp -r frontend/public deploy-frontend/ || true"
+      - "[ -d frontend/.ebextensions ] && cp -r frontend/.ebextensions deploy-frontend/ || true"
+      - ls -la deploy-frontend/
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: deploy-frontend
+  discard-paths: no
