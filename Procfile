@@ -1,0 +1,2 @@
+
+web: java -Dserver.port=5000 -jar fullstack-book-app.jar
