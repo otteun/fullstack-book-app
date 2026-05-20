@@ -1,1 +1,1 @@
-web: PORT=8080 HOSTNAME=0.0.0.0 node server.js
+web: npm start
