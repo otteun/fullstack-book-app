@@ -12,7 +12,7 @@ phases:
     commands:
       - echo "Post-build started..."
       - mkdir -p deploy-backend
-      - cp fullstack-book-app/build/libs/book-app.jar deploy-backend/
+      - cp fullstack-book-app/build/libs/*.jar deploy-backend/book-app.jar
       - cp fullstack-book-app/Procfile deploy-backend/
       - '[ -d fullstack-book-app/.ebextensions ] && cp -r fullstack-book-app/.ebextensions deploy-backend/ || true'
       - ls -la deploy-backend/
