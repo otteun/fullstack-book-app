@@ -2,14 +2,12 @@ version: 0.2
 
 env:
   variables:
-    # 💡 이전 로그에 등장한 새로운 백엔드 주소로 반영했습니다.
     NEXT_PUBLIC_API_URL: "http://note-app-backend-prod.eba-amjpnstq.ap-northeast-2.elasticbeanstalk.com"
     NODE_ENV: "production"
 
 phases:
   install:
     runtime-versions:
-      # 💡 Next.js 16+ 버전 빌드를 위해 Node.js 22 버전을 유지하는 것이 안전합니다.
       nodejs: 22
       
   pre_build:
@@ -20,28 +18,26 @@ phases:
   build:
     commands:
       - echo "Build started..."
-      # 💡 내 폴더 명인 fullstack-book-app-front로 진입합니다.
       - cd fullstack-book-app-front
       - npm ci
-      # 💡 이전 빌드에서 터졌던 Tailwind CSS 누락 방지를 위해 안전장치 추가
       - npm install --save-dev @tailwindcss/postcss postcss
       - npm run build
       
   post_build:
     commands:
       - echo "Post-build started..."
-      # 🚨 중요: CodeBuild는 Phase가 바뀌면 루트로 튕기므로 다시 폴더 진입
       - cd fullstack-book-app-front
       
-      # 💡 standalone 빌드 결과물 내부에 public과 static 폴더를 주입합니다.
+      # 1. standalone 빌드 결과물 내부에 public과 static 폴더 주입
       - mkdir -p .next/standalone/public
       - '[ -d public ] && cp -r public/. .next/standalone/public/ || true'
       - mkdir -p .next/standalone/.next/static
       - cp -r .next/static/. .next/standalone/.next/static/
       
-      # 💡 루트에 있는 Procfile과 Elastic Beanstalk 설정 파일을 standalone 내부로 복사합니다.
-      - '[ -f Procfile ] && cp Procfile .next/standalone/ || true'
+      # 2. 🚨 경로 실수 방지: 현재 위치(프로젝트 폴더)의 Procfile과 설정을 standalone 내부로 확실히 복사
+      - cp Procfile .next/standalone/Procfile || echo "Procfile not found in current dir!"
       - '[ -d .ebextensions ] && cp -r .ebextensions .next/standalone/ || true'
+      - '[ -d .platform ] && cp -r .platform .next/standalone/ || true'
       
       - echo "Checking standalone directory..."
       - ls -la .next/standalone
@@ -49,6 +45,6 @@ phases:
 artifacts:
   files:
     - '**/*'
-  # 💡 최종적으로 압축하여 Elastic Beanstalk으로 보낼 결과물 저장소 위치
+  # 이 폴더 통째로 압축되어 Beanstalk 루트 디렉토리에 풀립니다.
   base-directory: fullstack-book-app-front/.next/standalone
   discard-paths: no
