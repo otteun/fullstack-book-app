@@ -2,43 +2,38 @@ version: 0.2
 
 env:
   variables:
-    NEXT_PUBLIC_API_URL: "http://book-app-backend-prod.eba-3tfjm3s6.ap-northeast-2.elasticbeanstalk.com"
-    NODE_ENV: "production"
+    NEXT_PUBLIC_API_URL: "http://book-app-backend1.eba-3tfjm3s6.ap-northeast-2.elasticbeanstalk.com"
 
 phases:
   install:
     runtime-versions:
-      nodejs: 22
-      
+      nodejs: 24
   pre_build:
     commands:
       - echo "Checking versions..."
       - node -v && npm -v
-      
   build:
     commands:
       - echo "Build started..."
-      - cd fullstack-book-app-front
-      - npm ci
-      - npm install --save-dev @tailwindcss/postcss postcss
-      - npm run build
-      
+      - cd fullstack-book-app-frontend && npm ci && npm run build
   post_build:
     commands:
       - echo "Post-build started..."
-      - cd fullstack-book-app-front
-      - mkdir -p .next/standalone/public
-      - '[ -d public ] && cp -r public/. .next/standalone/public/ || true'
-      - mkdir -p .next/standalone/.next/static
-      - cp -r .next/static/. .next/standalone/.next/static/
-      - cp Procfile .next/standalone/Procfile || echo "Procfile not found in current dir!"
-      - '[ -d .ebextensions ] && cp -r .ebextensions .next/standalone/ || true'
-      - '[ -d .platform ] && cp -r .platform .next/standalone/ || true'      
-      - echo "Checking standalone directory..."
-      - ls -la .next/standalone
+      # 현재 위치가 frontend이므로, 상위로 나가서 deploy-frontend 생성
+      - cd ..
+      - mkdir -p deploy-frontend
+      # frontend 폴더 내의 결과물들을 deploy-frontend로 복사
+      - cp -r fullstack-book-app-frontend/.next deploy-frontend/
+      - cp fullstack-book-app-frontend/package.json deploy-frontend/
+      - cp fullstack-book-app-frontend/package-lock.json deploy-frontend/
+      - cp fullstack-book-app-frontend/Procfile deploy-frontend/
+      - '[ -f fullstack-book-app-frontend/next.config.ts ] && cp fullstack-book-app-frontend/next.config.ts deploy-frontend/ || true'
+      - '[ -d fullstack-book-app-frontend/public ] && cp -r fullstack-book-app-frontend/public deploy-frontend/ || true'
+      - '[ -d fullstack-book-app-frontend/.ebextensions ] && cp -r fullstack-book-app-frontend/.ebextensions deploy-frontend/ || true'
+      - ls -la deploy-frontend/
 
 artifacts:
   files:
     - '**/*'
-  base-directory: fullstack-book-app-front/.next/standalone
+  base-directory: deploy-frontend
   discard-paths: no
