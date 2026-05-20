@@ -1,1 +1,1 @@
-web: java -jar fullstack-book-app.jar
+web: java -jar book-app.jar
