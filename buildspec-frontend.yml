@@ -2,7 +2,7 @@ version: 0.2
 
 env:
   variables:
-    NEXT_PUBLIC_API_URL: "http://note-app-backend-prod.eba-amjpnstq.ap-northeast-2.elasticbeanstalk.com"
+    NEXT_PUBLIC_API_URL: "http://book-app-backend-prod.eba-3tfjm3s6.ap-northeast-2.elasticbeanstalk.com"
     NODE_ENV: "production"
 
 phases:
@@ -27,24 +27,18 @@ phases:
     commands:
       - echo "Post-build started..."
       - cd fullstack-book-app-front
-      
-      # 1. standalone 빌드 결과물 내부에 public과 static 폴더 주입
       - mkdir -p .next/standalone/public
       - '[ -d public ] && cp -r public/. .next/standalone/public/ || true'
       - mkdir -p .next/standalone/.next/static
       - cp -r .next/static/. .next/standalone/.next/static/
-      
-      # 2. 🚨 경로 실수 방지: 현재 위치(프로젝트 폴더)의 Procfile과 설정을 standalone 내부로 확실히 복사
       - cp Procfile .next/standalone/Procfile || echo "Procfile not found in current dir!"
       - '[ -d .ebextensions ] && cp -r .ebextensions .next/standalone/ || true'
-      - '[ -d .platform ] && cp -r .platform .next/standalone/ || true'
-      
+      - '[ -d .platform ] && cp -r .platform .next/standalone/ || true'      
       - echo "Checking standalone directory..."
       - ls -la .next/standalone
 
 artifacts:
   files:
     - '**/*'
-  # 이 폴더 통째로 압축되어 Beanstalk 루트 디렉토리에 풀립니다.
   base-directory: fullstack-book-app-front/.next/standalone
   discard-paths: no
