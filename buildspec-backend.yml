@@ -8,24 +8,28 @@ phases:
       - echo "Using Java 21"
       - java -version
 
-  pre_build:
-    commands:
-      - echo "Backend build started"
-      - chmod +x gradlew
-
   build:
     commands:
-      - ./gradlew clean bootJar -x test
+      # 1. backend 폴더가 없으므로 바로 실행 권한 부여 및 빌드
+      - chmod +x ./gradlew
+      - ./gradlew bootJar -x test
 
   post_build:
     commands:
-      - echo "Prepare deploy package"
-      - mkdir -p deploy
-      - ls build/libs
-      - JAR_FILE=$(ls build/libs/*.jar | grep -v plain | head -n 1)
-      - echo "Using $JAR_FILE"
-      - cp "$JAR_FILE" deploy/fullstack-book-app.jar
+      # 2. cd .. 를 할 필요가 없습니다. 현재 위치가 최상위 루트입니다.
+      - mkdir -p deploy-backend
+      
+      # 3. 루트 기준이므로 build/libs/*.jar 파일을 찾아 복사합니다.
+      # (bootJar로 빌드하면 보통 '프로젝트명-버전.jar' 형태로 생성되므로 * 사용이 안전합니다)
+      - cp build/libs/*.jar deploy-backend/book-app.jar
+      - cp Procfile deploy-backend/
+      
+      # 4. .ebextensions 폴더도 루트에 있을 테니 경로를 수정합니다.
+      - '[ -d .ebextensions ] && cp -r .ebextensions deploy-backend/ || true'
+      - ls -la deploy-backend/
 
 artifacts:
   files:
-    - deploy/fullstack-book-app.jar
+    - '**/*'
+  base-directory: deploy-backend
+  discard-paths: no
