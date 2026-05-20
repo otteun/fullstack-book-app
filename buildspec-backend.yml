@@ -10,7 +10,7 @@ phases:
       - cd fullstack-book-app && chmod +x gradlew && ./gradlew bootJar -x test
   post_build:
     commands:
-      - cd ..
+      - echo "Post-build started..."
       - mkdir -p deploy-backend
       - cp fullstack-book-app/build/libs/book-app.jar deploy-backend/
       - cp fullstack-book-app/Procfile deploy-backend/
