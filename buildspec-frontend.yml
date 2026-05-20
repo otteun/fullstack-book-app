@@ -15,7 +15,7 @@ phases:
   build:
     commands:
       - echo "Build started..."
-      - cd fullstack-book-app-frontend && npm ci && npm run build
+      - cd fullstack-book-app-front && npm ci && npm run build
   post_build:
     commands:
       - echo "Post-build started..."
@@ -23,13 +23,13 @@ phases:
       - cd ..
       - mkdir -p deploy-frontend
       # frontend 폴더 내의 결과물들을 deploy-frontend로 복사
-      - cp -r fullstack-book-app-frontend/.next deploy-frontend/
-      - cp fullstack-book-app-frontend/package.json deploy-frontend/
-      - cp fullstack-book-app-frontend/package-lock.json deploy-frontend/
-      - cp fullstack-book-app-frontend/Procfile deploy-frontend/
-      - '[ -f fullstack-book-app-frontend/next.config.ts ] && cp fullstack-book-app-frontend/next.config.ts deploy-frontend/ || true'
-      - '[ -d fullstack-book-app-frontend/public ] && cp -r fullstack-book-app-frontend/public deploy-frontend/ || true'
-      - '[ -d fullstack-book-app-frontend/.ebextensions ] && cp -r fullstack-book-app-frontend/.ebextensions deploy-frontend/ || true'
+      - cp -r fullstack-book-app-front/.next deploy-frontend/
+      - cp fullstack-book-app-front/package.json deploy-frontend/
+      - cp fullstack-book-app-front/package-lock.json deploy-frontend/
+      - cp fullstack-book-app-front/Procfile deploy-frontend/
+      - '[ -f fullstack-book-app-front/next.config.ts ] && cp fullstack-book-app-front/next.config.ts deploy-frontend/ || true'
+      - '[ -d fullstack-book-app-front/public ] && cp -r fullstack-book-app-front/public deploy-frontend/ || true'
+      - '[ -d fullstack-book-app-front/.ebextensions ] && cp -r fullstack-book-app-front/.ebextensions deploy-frontend/ || true'
       - ls -la deploy-frontend/
 
 artifacts:
