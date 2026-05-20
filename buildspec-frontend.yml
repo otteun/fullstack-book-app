@@ -2,14 +2,16 @@ version: 0.2
 
 env:
   variables:
-    NEXT_PUBLIC_API_URL: "http://book-app-backend-prod.eba-3tfjm3s6.ap-northeast-2.elasticbeanstalk.com"
+    # 💡 이전 로그에 등장한 새로운 백엔드 주소로 반영했습니다.
+    NEXT_PUBLIC_API_URL: "http://note-app-backend-prod.eba-amjpnstq.ap-northeast-2.elasticbeanstalk.com"
     NODE_ENV: "production"
 
 phases:
   install:
     runtime-versions:
+      # 💡 Next.js 16+ 버전 빌드를 위해 Node.js 22 버전을 유지하는 것이 안전합니다.
       nodejs: 22
-  
+      
   pre_build:
     commands:
       - echo "Checking versions..."
@@ -18,23 +20,26 @@ phases:
   build:
     commands:
       - echo "Build started..."
-      # 빌드 수행을 위해 프론트엔드 폴더로 명확히 진입
-      - cd fullstack-book-app-front && npm ci && npm run build
+      # 💡 내 폴더 명인 fullstack-book-app-front로 진입합니다.
+      - cd fullstack-book-app-front
+      - npm ci
+      # 💡 이전 빌드에서 터졌던 Tailwind CSS 누락 방지를 위해 안전장치 추가
+      - npm install --save-dev @tailwindcss/postcss postcss
+      - npm run build
       
   post_build:
     commands:
       - echo "Post-build started..."
-      # 🚨 [수정] 페이즈가 바뀌었으므로 프론트엔드 폴더로 다시 한 번 진입해야 합니다!
+      # 🚨 중요: CodeBuild는 Phase가 바뀌면 루트로 튕기므로 다시 폴더 진입
       - cd fullstack-book-app-front
       
-      # [필수] standalone 구동을 위한 public 및 static 폴더 복사
+      # 💡 standalone 빌드 결과물 내부에 public과 static 폴더를 주입합니다.
       - mkdir -p .next/standalone/public
       - '[ -d public ] && cp -r public/. .next/standalone/public/ || true'
       - mkdir -p .next/standalone/.next/static
       - cp -r .next/static/. .next/standalone/.next/static/
       
-      # [선택] 만약 루트에 작성해 둔 Procfile이 있다면 standalone 내부로 복사해 줍니다.
-      # (Nginx가 8080을 바라보고 있다면 꼭 필요한 조치입니다)
+      # 💡 루트에 있는 Procfile과 Elastic Beanstalk 설정 파일을 standalone 내부로 복사합니다.
       - '[ -f Procfile ] && cp Procfile .next/standalone/ || true'
       - '[ -d .ebextensions ] && cp -r .ebextensions .next/standalone/ || true'
       
@@ -44,6 +49,6 @@ phases:
 artifacts:
   files:
     - '**/*'
-  # CodeBuild가 최종 결과물을 수집할 루트 위치
+  # 💡 최종적으로 압축하여 Elastic Beanstalk으로 보낼 결과물 저장소 위치
   base-directory: fullstack-book-app-front/.next/standalone
   discard-paths: no
