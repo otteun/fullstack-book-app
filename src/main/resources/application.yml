@@ -1,19 +1,17 @@
 server:
-  port: 8080
+  port: ${SERVER_PORT:5000} # 8080에서 5000으로 변경하여 EB 프록시와 일치
 
-spring:
-  datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+app:
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:3000}
 
-  h2:
-    console:
-      enabled: true
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-
-    show-sql: true
+# Actuator 설정은 완벽합니다. 
+# 다만 AWS Beanstalk 콘솔에서 로드밸런서 헬스체크 경로를 꼭 '/actuator/health'로 지정해주세요!
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  endpoint:
+    health:
+      show-details: always
