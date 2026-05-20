@@ -2,7 +2,6 @@ version: 0.2
 
 env:
   variables:
-    # 💡 여기에 실제 배포된 백엔드 서버의 URL을 입력하세요! (예시 주소이므로 꼭 변경해야 합니다)
     NEXT_PUBLIC_API_URL: "http://book-app-backend-prod.eba-3tfjm3s6.ap-northeast-2.elasticbeanstalk.com"
 
 phases:
@@ -16,28 +15,27 @@ phases:
   build:
     commands:
       - echo "Build started..."
-      # 1. 실제 폴더명인 fullstack-book-app-front로 이동하여 빌드합니다.
       - cd fullstack-book-app-front && npm ci && npm run build
   post_build:
     commands:
       - echo "Post-build started..."
-      # 2. 빌드가 끝난 후 다시 최상위 루트로 복귀합니다.
-      - cd ..
-      - mkdir -p deploy-frontend
+      - cd fullstack-book-app-front
       
-      # 3. fullstack-book-app-front 폴더 내의 결과물들을 deploy-frontend로 복사합니다.
-      - cp -r fullstack-book-app-front/.next deploy-frontend/
-      - cp fullstack-book-app-front/package.json deploy-frontend/
-      - cp fullstack-book-app-front/package-lock.json deploy-frontend/
-      - cp fullstack-book-app-front/Procfile deploy-frontend/
-      - '[ -f fullstack-book-app-front/next.config.ts ] && cp fullstack-book-app-front/next.config.ts deploy-frontend/ || true'
-      - '[ -f fullstack-book-app-front/next.config.js ] && cp fullstack-book-app-front/next.config.js deploy-frontend/ || true'
-      - '[ -d fullstack-book-app-front/public ] && cp -r fullstack-book-app-front/public deploy-frontend/ || true'
-      - '[ -d fullstack-book-app-front/.ebextensions ] && cp -r fullstack-book-app-front/.ebextensions deploy-frontend/ || true'
-      - ls -la deploy-frontend/
+      # [필수] standalone 폴더 내부로 public과 static 폴더를 복사해줘야 정상 동작합니다.
+      - mkdir -p .next/standalone/public
+      - '[ -d public ] && cp -r public/. .next/standalone/public/ || true'
+      - mkdir -p .next/standalone/.next/static
+      - cp -r .next/static/. .next/standalone/.next/static/
+      
+      # [선택] EB 확장 설정(.ebextensions)이 있다면 standalone 폴더로 복사합니다.
+      - '[ -d .ebextensions ] && cp -r .ebextensions .next/standalone/ || true'
+      
+      - echo "Checking standalone directory..."
+      - ls -la .next/standalone
 
 artifacts:
   files:
     - '**/*'
-  base-directory: deploy-frontend
+  # 💡 중요: Next.js가 구워준 배포 전용 standalone 폴더 자체를 루트로 지정합니다.
+  base-directory: fullstack-book-app-front/.next/standalone
   discard-paths: no
