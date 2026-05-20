@@ -1,1 +1,1 @@
-web: java -jar book-app.jar
+web: PORT=8080 HOSTNAME=0.0.0.0 node server.js
